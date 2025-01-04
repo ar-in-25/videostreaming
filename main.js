@@ -13,16 +13,19 @@ const createadmin  = require('./helper/createAdmin')
 
 const app = express()
 
-app.use(cors())
-// app.use(ipgeoblock({
-// 	geolite2: "./public/geolite2-country-ipv4.mmdb",
-// 	allowedCountries: [ "IN" ]
-// }));
-app.use(express.json())
-//dont use "/public/videos" as path. only "/videos"
-// app.use(express.static(path.join(__dirname, "public/thumbnails")));
+//dev
+app.use(ipgeoblock({
+	geolite2: "./public/geolite2-country-ipv4.mmdb",
+	allowedCountries: [ "IN" ]
+}));
+app.use(express.static(path.join(__dirname, "public/angular")));
 
+//local
+// app.use(cors())
+
+app.use(express.json())
 app.use(getipaddress)
+
 syncer()
 // createadmin()
 app.use("/video", videorouter)
