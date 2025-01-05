@@ -14,6 +14,7 @@ const createadmin  = require('./helper/createAdmin')
 const app = express()
 
 //dev
+app.use(getipaddress)
 // app.use(ipgeoblock({
 // 	geolite2: "./public/geolite2-country-ipv4.mmdb",
 // 	allowedCountries: [ "IN" ]
@@ -25,7 +26,7 @@ app.use(express.static(path.join(__dirname, "public/angular")));
 
 
 app.use(express.json())
-app.use(getipaddress)
+
 
 syncer()
 // createadmin()
