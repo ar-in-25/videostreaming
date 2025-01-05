@@ -52,7 +52,7 @@ exports.deleteUserById = async (req, res, next) => {
 
 exports.getAllReportedVideos = async (req, res, next) => {
     let r = await video.findAll({
-        attributes : [ 'id', 'title', 'description', [sequelize.fn('COUNT', sequelize.col('Reports.id')), 'reportCount'] ],
+        attributes : [ 'id', [sequelize.fn('COUNT', sequelize.col('Reports.id')), 'reportCount'] ],
         include : {
             model : report,
             attributes : []
@@ -60,4 +60,5 @@ exports.getAllReportedVideos = async (req, res, next) => {
         // having: sequelize.literal('COUNT(Reports.id) > 0')
     })
     console.log(r.map(x =>x.toJSON()))
+    return res.status(200).json(r)
 }
