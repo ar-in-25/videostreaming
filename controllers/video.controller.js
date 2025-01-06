@@ -7,7 +7,7 @@ const report = require('../models/report.model')
 
 exports.getVideos = async (req, res, next) => {
     try {
-        let allVideos = await videos.findAll({ include: [{ model: user, attributes: ['username'] }] })
+        let allVideos = await videos.findAll({ attributes : ['id','title','description','views','UserId'], include: [{ model: user, attributes: ['username'] }] })
         return res.status(200).send(allVideos)
     } catch (error) {
         return res.status(500).json({ message: error })
@@ -97,6 +97,7 @@ exports.getVideoDetail = async (req, res, next) => {
         where: {
             id: req.params.videoId
         },
+        attributes : ['id','title','description','views','UserId'],
         include: {
             model: user,
             attributes: ['username']
