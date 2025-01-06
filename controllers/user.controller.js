@@ -7,7 +7,7 @@ exports.getUserVideos = async (req, res, next) => {
     // let data = await foundUser.getVideos()
     let data = await video.findAll({
         where: { UserId: req.params.UserId },
-        attributes : ['id','title','description','views','UserId'],
+        attributes : ['id','title','description','views','createdAt','UserId'],
         include : {
             model : user,
             attributes : ['username']
@@ -32,7 +32,7 @@ exports.getSubscriptionList = async (req, res, next) => {
                 include : {
                     model  : video,
                     limit : 5,
-                    attributes : ['id','title','description','views','UserId']
+                    attributes : ['id','title','description','views','createdAt','UserId']
                 }
             },
         })

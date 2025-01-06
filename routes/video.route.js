@@ -6,7 +6,7 @@ const authenticatetoken = require('../middlewares/authenticatetoken')
 const multererrorhandler = require('../middlewares/multerErrorHandler')
 
 
-router.get("/", videocontroller.getVideos)
+router.get("/page/:number", videocontroller.getVideos)
 
 router.post("/upload",authenticatetoken, upload.single('video'), multererrorhandler,  videocontroller.postVideos)
 
