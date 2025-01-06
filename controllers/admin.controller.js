@@ -12,7 +12,6 @@ exports.deleteCommentById = async (req, res, next) => {
     })
     //1 on deleted , 0 on error
     if (deletedComment) {
-        console.log(deletedComment)
         return res.status(200).json({ message: 'Deleted comment' })
     } else {
         return res.status(400).json({ message: 'Comment does not exist , young lady' })
@@ -59,6 +58,5 @@ exports.getAllReportedVideos = async (req, res, next) => {
         },
         // having: sequelize.literal('COUNT(Reports.id) > 0')
     })
-    console.log(r.map(x =>x.toJSON()))
     return res.status(200).json(r)
 }

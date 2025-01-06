@@ -53,5 +53,10 @@ exports.postCommentForVideo = async (req, res, next) => {
 
 exports.postSubcommentForComment = async (req, res, next) => {
     let commented = await comment.create({comment : req.body.comment, UserId : req.user.id , VideoId : req.body.VideoId ,  parentcommentid: req.body.id})
-    return res.status(200).json({message : "Added comment"})
+    if(commented){
+        return res.status(200).json({message : "Added comment"})
+    }else{
+        return res.status(500).json({message : 'Cant add comment'})
+    }
+    
 }
