@@ -25,6 +25,7 @@ app.use(ipgeoblock({
 app.use(helmet({
     crossOriginResourcePolicy: false,
     strictTransportSecurity: false,
+    crossOriginOpenerPolicy: false,
 }))
 
 app.use(express.static(path.join(__dirname, "public/angular")));
