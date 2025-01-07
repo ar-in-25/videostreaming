@@ -21,7 +21,9 @@ app.use(ipgeoblock({
 	allowedCountries: [ "IN" ]
 }));
 
-// app.use(cors())
+app.use(cors({
+    origin : 'https://bharattube.onrender.com'
+}))
 
 //remove strict transport security with https
 // app.use(helmet({
@@ -30,7 +32,7 @@ app.use(ipgeoblock({
 //     crossOriginOpenerPolicy: false,
 // }))
 
-app.use(express.static(path.join(__dirname, "public/angular")));
+// app.use(express.static(path.join(__dirname, "public/angular")));
 
 //parse json data
 app.use(express.json())
