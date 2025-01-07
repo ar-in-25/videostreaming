@@ -11,6 +11,7 @@ const ipgeoblock = require("node-ipgeoblock");
 const getipaddress = require('./middlewares/getipaddress')
 const createadmin  = require('./helper/createAdmin')
 const helmet = require("helmet")
+const https = require("https")
 
 const app = express()
 
@@ -53,7 +54,17 @@ app.use((err, req, res, next) => {
 })
 
 
-//create server
-app.listen(process.env.PORT, (ex) => {
-    console.log(process.env.PORT)
-})
+//create prod server
+const options = {
+    key: fs.readFileSync('/etc/letsencrypt/live/bharattube.ddns.net/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/bharattube.ddns.net/fullchain.pem')
+};
+https.createServer(options, app).listen(443, () => {
+    console.log('API server running on https://bharattube.ddns.net');
+});
+
+
+//create server local
+// app.listen(process.env.PORT, (ex) => {
+//     console.log(process.env.PORT)
+// })
