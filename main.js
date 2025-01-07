@@ -22,11 +22,11 @@ app.use(ipgeoblock({
 // app.use(cors())
 
 //remove strict transport security with https
-app.use(helmet({
-    crossOriginResourcePolicy: false,
-    strictTransportSecurity: false,
-    crossOriginOpenerPolicy: false,
-}))
+// app.use(helmet({
+//     crossOriginResourcePolicy: false,
+//     strictTransportSecurity: false,
+//     crossOriginOpenerPolicy: false,
+// }))
 
 app.use(express.static(path.join(__dirname, "public/angular")));
 
