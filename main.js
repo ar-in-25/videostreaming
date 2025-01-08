@@ -16,6 +16,7 @@ const fs = require("fs")
 
 const app = express()
 
+//block non indian ip
 app.use(ipgeoblock({
 	geolite2: "./public/GeoLite2-Country.mmdb",
 	allowedCountries: [ "IN" ]
@@ -23,12 +24,13 @@ app.use(ipgeoblock({
 
 // app.use(cors())
 
-// remove strict transport security with https
+//safety
 app.use(helmet({
     contentSecurityPolicy: false,
 }))
 
-app.use(express.static(path.join(__dirname, "public/angular")));
+//serve index.html
+// app.use(express.static(path.join(__dirname, "public/angular")));
 
 //parse json data
 app.use(express.json())
@@ -41,11 +43,16 @@ syncer()
 // createadmin()
 
 //routes
-app.use("/video", videorouter)
-app.use("/authenticate", authenticaterouter)
-app.use("/user", userrouter)
-app.use("/comment", commentrouter)
-app.use("/admin", adminrouter)
+app.use("/server/video", videorouter)
+app.use("/server/authenticate", authenticaterouter)
+app.use("/server/user", userrouter)
+app.use("/server/comment", commentrouter)
+app.use("/server/admin", adminrouter)
+
+//send angular index.html and use its routing
+app.get('*', (req, res, next) =>{
+    res.sendFile(path.join(__dirname, 'public', 'angular', 'index.html'))
+})
 
 //handle any error
 app.use((err, req, res, next) => {
@@ -63,7 +70,7 @@ https.createServer(options, app).listen(443, () => {
 });
 
 
-//create server local
+// create server local
 // app.listen(process.env.PORT, (ex) => {
 //     console.log(process.env.PORT)
 // })
