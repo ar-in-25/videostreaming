@@ -56,12 +56,16 @@ exports.subscribeToUser = async (req, res, next) => {
 }
 
 exports.getNotifications = async (req, res, next) => {
+    const offsetBy = 0 + (8*req.body.page)
+    const limitBy = 8
     let allnotifications = await notification.findAndCountAll({
         where:{
             UserId : req.user.id,
-            viewed : false
         },
-        attributes : ['id','createdAt'],
+        attributes : ['id','createdAt','viewed'],
+        order: [['createdAt', 'DESC']],
+        offset: offsetBy,
+        limit: limitBy,
         include : {
             model : comment,
             attributes : ['comment'],
@@ -75,5 +79,22 @@ exports.getNotifications = async (req, res, next) => {
         return res.status(200).json(allnotifications)
     }else{
         return res.status(400).json("Some error occured")
+    }
+}
+
+exports.readNotifications = async (req, res, next) => {
+    let setAsRead = await notification.update(
+        {viewed : true},
+        {
+            where : {
+                UserId : req.user.id
+            }
+
+        }
+    )
+    if(setAsRead){
+        res.status(200).json({message : "Done"})
+    }else{
+        res.status(500).json({message : "Failed"})
     }
 }

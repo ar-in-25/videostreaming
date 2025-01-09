@@ -7,8 +7,10 @@ router.get('/:UserId/videos', usercontroller.getUserVideos)
 
 router.get('/subscription', authenticateToken, usercontroller.getSubscriptionList)
 
-router.get('/notifications', authenticateToken, usercontroller.getNotifications)
-
 router.post('/subscribe', authenticateToken, usercontroller.subscribeToUser)
+
+router.post('/notifications', authenticateToken, usercontroller.getNotifications)
+
+router.post('/notifications/read',authenticateToken, usercontroller.readNotifications )
 
 module.exports = router
