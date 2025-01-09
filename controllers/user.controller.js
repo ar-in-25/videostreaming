@@ -1,6 +1,8 @@
 const user = require('../models/user.model') 
 const video = require('../models/video.model')
 const subscription  = require('../models/subscription.model')
+const notification = require('../models/notification.model')
+const comment = require('../models/comment.model')
 
 exports.getUserVideos = async (req, res, next) => {
     // let foundUser = await user.findOne({ where: { username: req.user.username } })
@@ -50,5 +52,28 @@ exports.subscribeToUser = async (req, res, next) => {
         return res.status(200).json({message : "Subscribed"})
     }else{
         return res.status(400).json({message : "Subscription failed"})
+    }
+}
+
+exports.getNotifications = async (req, res, next) => {
+    let allnotifications = await notification.findAndCountAll({
+        where:{
+            UserId : req.user.id,
+            viewed : false
+        },
+        attributes : ['id','createdAt'],
+        include : {
+            model : comment,
+            attributes : ['comment'],
+            include: {
+                model : user,
+                attributes : ['username']
+            }
+        }
+    })
+    if(notification){
+        return res.status(200).json(allnotifications)
+    }else{
+        return res.status(400).json("Some error occured")
     }
 }
