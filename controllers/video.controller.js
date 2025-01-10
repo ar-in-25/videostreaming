@@ -67,14 +67,14 @@ exports.streamVideo = async (req, res, next) => {
     if (videoRange) {
         const parts = videoRange.replace(/bytes=/, "").split("-");
         const startByte = parseInt(parts[0], 10);
-        // const end = parts[1]
-        //     ? parseInt(parts[1], 10)
-        //     : videosize-1;
-        const endByte = Math.min(startByte + chunkSize, videoSize - 1)
-        if (endByte - startByte < chunkSize) {
-            chunkSize = (endByte - startByte) + 1
-        }
-        // const chunksize = (end-start) + 1;
+        const endByte = parts[1]
+            ? parseInt(parts[1], 10)
+            : videoSize-1;
+        // const endByte = Math.min(startByte + chunkSize, videoSize - 1)
+        // if (endByte - startByte < chunkSize) {
+        //     chunkSize = (endByte - startByte) + 1
+        // }
+        const chunkSize = (endByte-startByte) + 1;
         const file = fs.createReadStream(videoPath, { start: startByte, end: endByte });
         const head = {
             'Content-Range': `bytes ${startByte}-${endByte}/${videoSize}`,

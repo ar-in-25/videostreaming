@@ -24,7 +24,10 @@ video.hasMany(report, {onDelete : 'CASCADE'})
 report.belongsTo(video)
 
 user.hasMany(notification, {onDelete : 'CASCADE'})
+video.hasMany(notification, {onDelete : 'CASCADE'})
+comment.hasMany(notification, {onDelete : 'CASCADE'})
 notification.belongsTo(user)
+notification.belongsTo(video)
 notification.belongsTo(comment)
 
 syncer = async () => { await sequelize.sync({}) }

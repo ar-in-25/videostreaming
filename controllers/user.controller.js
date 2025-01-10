@@ -43,16 +43,27 @@ exports.getSubscriptionList = async (req, res, next) => {
 }
 
 exports.subscribeToUser = async (req, res, next) => {
+    //check user if he has already subscribed
     if(req.user.id == req.body.UserId){
         return res.status(400).json({message : "Can't subscribe to yourself, idiot!"})
     }
-    //check user if he has already subscribed
-    let subscribed = subscription.create({subscriber_id: req.user.id, subscribedto_id : req.body.UserId})
+    let alreadySubscribed = await subscription.findOne({
+        where : {
+            subscriber_id : req.user.id,
+            subscribedto_id : req.body.UserId
+        }
+    })
+    if(alreadySubscribed){
+        return res.status(400).json({message : "Already subscribed"})
+    }else{
+        let subscribed = subscription.create({subscriber_id: req.user.id, subscribedto_id : req.body.UserId})
     if(subscribed){
         return res.status(200).json({message : "Subscribed"})
     }else{
         return res.status(400).json({message : "Subscription failed"})
     }
+    }
+    
 }
 
 exports.getNotifications = async (req, res, next) => {
@@ -68,7 +79,7 @@ exports.getNotifications = async (req, res, next) => {
         limit: limitBy,
         include : {
             model : comment,
-            attributes : ['comment'],
+            attributes : ['comment', 'VideoId'],
             include: {
                 model : user,
                 attributes : ['username']

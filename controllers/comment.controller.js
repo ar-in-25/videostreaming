@@ -49,7 +49,7 @@ exports.postCommentForVideo = async (req, res, next) => {
         if (createdComment) {
             //if comment is not from video uploader , add notification
             if(req.user.id != videoObject.UserId) {
-                let createdNotification = await notification.create({ viewed: false, CommentId: createdComment.id, UserId: videoObject.UserId })
+                let createdNotification = await notification.create({ viewed: false, CommentId: createdComment.id, UserId: videoObject.UserId , VideoId : videoObject.id})
             }
             return res.status(200).json({ message: "Added comment" })
         }else{
@@ -88,7 +88,7 @@ exports.postSubcommentForComment = async (req, res, next) => {
             //dont create notification for : 
             //reply to your own comment
             if(req.user.id != parentComment.UserId) {
-                let createdNotification = await notification.create({ viewed: false, CommentId: createdComment.id, UserId: parentComment.UserId })
+                let createdNotification = await notification.create({ viewed: false, CommentId: createdComment.id, UserId: parentComment.UserId, VideoId :  req.body.VideoId })
             }
             return res.status(200).json({ message: "Added comment" })
         } else {
