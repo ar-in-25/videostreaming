@@ -34,7 +34,7 @@ app.use(helmet({
 }))
 
 //serve index.html
-// app.use(express.static(path.join(__dirname, "public/angular")));
+app.use(express.static(path.join(__dirname, "public/angular")));
 
 //parse json data
 app.use(express.json())
