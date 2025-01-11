@@ -25,16 +25,16 @@ app.use(ipgeoblock({
 
 // app.use(cors())
 
+//before serving static , compress it
+app.use(compression())
+
 //safety
 app.use(helmet({
     contentSecurityPolicy: false,
 }))
 
-//before serving static , compress it
-app.use(compression())
-
 //serve index.html
-// app.use(express.static(path.join(__dirname, "public/angular")));
+app.use(express.static(path.join(__dirname, "public/angular")));
 
 //parse json data
 app.use(express.json())
