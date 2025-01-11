@@ -13,6 +13,7 @@ const createadmin  = require('./helper/createAdmin')
 const helmet = require("helmet")
 const https = require("https")
 const fs = require("fs")
+const compression = require("compression")
 
 const app = express()
 
@@ -28,6 +29,9 @@ app.use(ipgeoblock({
 app.use(helmet({
     contentSecurityPolicy: false,
 }))
+
+//before serving static , compress it
+app.use(compression())
 
 //serve index.html
 // app.use(express.static(path.join(__dirname, "public/angular")));
