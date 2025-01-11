@@ -29,12 +29,12 @@ app.use(ipgeoblock({
 app.use(compression())
 
 //safety
-// app.use(helmet({
-//     contentSecurityPolicy: false,
-// }))
+app.use(helmet({
+    contentSecurityPolicy: false,
+}))
 
 //serve index.html
-app.use(express.static(path.join(__dirname, "public/angular")));
+// app.use(express.static(path.join(__dirname, "public/angular")));
 
 //parse json data
 app.use(express.json())
