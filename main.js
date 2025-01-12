@@ -66,11 +66,11 @@ app.use((err, req, res, next) => {
 
 //create prod server
 const options = {
-    key: fs.readFileSync('/etc/letsencrypt/live/bharattube.ddns.net/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/bharattube.ddns.net/fullchain.pem')
+    key: fs.readFileSync('/etc/letsencrypt/live/bharattube.xyz/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/bharattube.xyz/fullchain.pem')
 };
 https.createServer(options, app).listen(443, () => {
-    console.log('API server running on https://bharattube.ddns.net');
+    console.log('API server running on https://bharattube.xyz');
 });
 
 
