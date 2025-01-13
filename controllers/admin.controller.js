@@ -69,6 +69,7 @@ exports.deleteUserById = async (req, res, next) => {
 exports.getAllReportedVideos = async (req, res, next) => {
     let r = await video.findAll({
         attributes : [ 'id', [sequelize.fn('COUNT', sequelize.col('Reports.id')), 'reportCount'] ],
+        group : ['Video.id'],
         include : {
             model : report,
             attributes : []
