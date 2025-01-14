@@ -18,10 +18,10 @@ const compression = require("compression")
 const app = express()
 
 //block non indian ip
-// app.use(ipgeoblock({
-// 	geolite2: "./public/GeoLite2-Country.mmdb",
-// 	allowedCountries: [ "IN" ]
-// }));
+app.use(ipgeoblock({
+	geolite2: "./public/GeoLite2-Country.mmdb",
+	allowedCountries: [ "IN" ]
+}));
 
 // app.use(cors())
 
