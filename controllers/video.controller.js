@@ -4,6 +4,7 @@ const fs = require('fs')
 const path = require('path')
 const generateThumbnail = require('../helper/generateThumbnail')
 const report = require('../models/report.model')
+const tempvideo = require('../models/tempvideo.model')
 
 exports.getVideos = async (req, res, next) => {
     const offsetBy = 0 + (8*req.params.number)
@@ -14,7 +15,7 @@ exports.getVideos = async (req, res, next) => {
             order: [['createdAt', 'DESC']],
             offset: offsetBy,
             limit: limitBy,
-            include: [{ model: user, attributes: ['username'] }]
+            include: [{ model: user, attributes: ['username'] }, {model : tempvideo, attributes : ['id']}]
         })
         return res.status(200).send(allVideos)
     } catch (error) {
@@ -32,8 +33,12 @@ exports.postVideos = async (req, res, next) => {
         return res.status(400).json({ message: 'Title is required.' })
     } else {
         try {
-            let b = await videos.create({ title: videoTitle, description: videoDescription, videoname: req.file.filename, views: 0, UserId: req.user.id, ipAddress: req.clientIpAddressFound })
-            generateThumbnail(req.file.filename, b.toJSON().id)
+            let addedVideo = await videos.create({ title: videoTitle, description: videoDescription, videoname: req.file.filename, views: 0, UserId: req.user.id, ipAddress: req.clientIpAddressFound })
+            console.log(req.body)
+            if(req.body.temporary == 'true'){
+                let addedTempvideo = await tempvideo.create({VideoId : addedVideo.id})
+            }
+            generateThumbnail(req.file.filename, addedVideo.id)
             return res.status(200).json({ message: "Upload completed" })
         } catch (error) {
             return res.status(500).json({ message: error })

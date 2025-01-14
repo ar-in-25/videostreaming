@@ -14,6 +14,7 @@ const helmet = require("helmet")
 const https = require("https")
 const fs = require("fs")
 const compression = require("compression")
+require('./helper/cronJob')
 
 const app = express()
 
