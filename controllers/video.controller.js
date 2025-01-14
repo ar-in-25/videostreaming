@@ -15,7 +15,7 @@ exports.getVideos = async (req, res, next) => {
             order: [['createdAt', 'DESC']],
             offset: offsetBy,
             limit: limitBy,
-            include: [{ model: user, attributes: ['username'] }, {model : tempvideo, attributes : ['id']}]
+            include: [{ model: user, attributes: ['username'] }, {model : tempvideo, attributes : ['createdAt']}]
         })
         return res.status(200).send(allVideos)
     } catch (error) {
