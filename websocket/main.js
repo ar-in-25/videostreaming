@@ -18,7 +18,7 @@ let Users = []
 let Names = []
 
 wss.on('connection', function connection(ws) {
-
+  Users.push(ws)
   ws.on('message', (message, isBinary) => {
     isBinary ? onBinary(message, ws) : onText(JSON.parse(message), ws)
   });
@@ -53,8 +53,7 @@ function onText(message, user){
 
 
 function addUser(name, ws) {
-  Users.push(ws)
-  Names.push(name)
+  Names[Users.indexOf(ws)] = name
 }
 
 function removeUser(name, ws) {
