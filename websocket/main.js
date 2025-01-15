@@ -42,7 +42,7 @@ function onText(message, user){
   switch(message.event){
     case "connect":
       addUser(message.name, user)
-      sendToEveryoneExceptUser(JSON.stringify({name : message.name, event : 'joined'}), user)
+      sendToEveryoneExceptUser(JSON.stringify({name : message.name, event : 'joined', all : Names}), user)
       break;
     case "disconnect":
       sendLeaveMessage(JSON.stringify({name : message.name, event : 'left'}))
