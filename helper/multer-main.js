@@ -2,8 +2,7 @@ const multer = require('multer')
 
 
 const filefilter = (req, file, cb) => {
-  // || file.mimetype ===  'video/webm'
-    if(file.mimetype === 'video/mp4' ){
+    if(file.mimetype === 'video/mp4' || file.mimetype ===  'video/webm' ){
         cb(null,true);
     }else{
         cb({message: 'Unsupported File Format'}, false)
@@ -29,6 +28,6 @@ const storage = multer.diskStorage({
 
 // const upload = multer({dest : 'public/videos', limits : {fileSize : 5242880}})
 
-const upload = multer({storage : storage, limits : {fileSize : 30*1024*1024}, fileFilter : filefilter})
+const upload = multer({storage : storage, limits : {fileSize : 45*1024*1024}, fileFilter : filefilter})
 
 module.exports = upload
