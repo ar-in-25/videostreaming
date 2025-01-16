@@ -27,6 +27,25 @@ wss.on('connection', function connection(ws) {
 });
 
 function onText(message, ws){
+  if(message.includes("T9")){
+    sendText(message, ws)
+  }else{
+    userJoined(message, ws)
+  }
+}
+
+function sendText(message, ws){
+  let text = message.split("T9")[1]
+  text = `@${ws.name} : ${text}`
+  
+  wss.clients.forEach((client) => {
+    if (client !== ws && client.readyState === WebSocket.OPEN) {
+      client.send(`T9${text}`)
+    }
+  })
+}
+
+function userJoined(message, ws){
   ws.name = message
   let names = []
   wss.clients.forEach((client) => {
