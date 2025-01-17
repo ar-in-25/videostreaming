@@ -4,6 +4,20 @@ const subscription  = require('../models/subscription.model')
 const notification = require('../models/notification.model')
 const comment = require('../models/comment.model')
 
+exports.getUser = async (req, res, next) => {
+    let foundUser = await user.findOne({
+        where : {
+            id : req.params.id
+        },
+        attributes : ['id','username']
+    })
+    if(foundUser){
+        return res.status(200).json(foundUser)
+    }else{
+        return res.status(404).json({message :"This user doesn't exist, young lady"})
+    }
+}
+
 exports.getUserVideos = async (req, res, next) => {
     // let foundUser = await user.findOne({ where: { username: req.user.username } })
     // let data = await foundUser.getVideos()
@@ -43,10 +57,20 @@ exports.getSubscriptionList = async (req, res, next) => {
 }
 
 exports.subscribeToUser = async (req, res, next) => {
-    //check user if he has already subscribed
+    //check user subscribing to himself
     if(req.user.id == req.body.UserId){
         return res.status(400).json({message : "Can't subscribe to yourself, idiot!"})
     }
+    //else check if user exist
+    let userExist = await user.findOne({
+        where : {
+            id : req.body.UserId
+        }
+    })
+    if(!userExist){
+        return res.status(404).json({message : "The user doesn't exist, young lady"})
+    }
+    //else check if already subscribed , then unsubscribe
     let alreadySubscribed = await subscription.findOne({
         where : {
             subscriber_id : req.user.id,
@@ -54,14 +78,19 @@ exports.subscribeToUser = async (req, res, next) => {
         }
     })
     if(alreadySubscribed){
-        return res.status(400).json({message : "Already subscribed"})
-    }else{
+        let unsubscribeDone = await alreadySubscribed.destroy()
+        if(unsubscribeDone){
+            return res.status(200).json({message : "Unsubscribed"})
+        }else{
+            return res.status(500).json({message : "Unsubscribe failed"})
+        }
+    } else {
         let subscribed = subscription.create({subscriber_id: req.user.id, subscribedto_id : req.body.UserId})
-    if(subscribed){
-        return res.status(200).json({message : "Subscribed"})
-    }else{
-        return res.status(400).json({message : "Subscription failed"})
-    }
+        if(subscribed){
+            return res.status(200).json({message : "Subscribed"})
+        }else{
+            return res.status(400).json({message : "Subscription failed"})
+        }
     }
     
 }
@@ -107,5 +136,19 @@ exports.readNotifications = async (req, res, next) => {
         res.status(200).json({message : "Done"})
     }else{
         res.status(500).json({message : "Failed"})
+    }
+}
+
+exports.amISubscribed = async (req, res, next) => {
+    let amI = await subscription.findOne({
+        where : {
+            subscriber_id : req.user.id,
+            subscribedto_id : req.params.userid
+        }
+    })
+    if(amI){
+        return res.status(200).json({message : "yes"})
+    }else{
+        return res.status(200).json({message : "no"})
     }
 }

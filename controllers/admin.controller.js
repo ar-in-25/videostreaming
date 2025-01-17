@@ -33,17 +33,8 @@ exports.deleteVideoById = async (req, res, next) => {
 
     //1 on deleted , 0 on error
     if (deletedVideo) {
-        //delete thumbnail
-        fs.unlink('./public/thumbnails/'+toBeDeletedVideo.id + '.jpg', (err) => {})
-        //delete video
-        fs.unlink('./public/videos/'+ toBeDeletedVideo.videoname, (err) => {
-            if(!err){
-                return res.status(200).json({ message: 'Deleted video' })
-            }else{
-                console.log(err)
-                return res.status(500).json({message : err})
-            }
-        })
+        deleteVideoFile(toBeDeletedVideo)
+        return res.status(200).json({ message: 'Deleted video' })
     } else {
         return res.status(400).json({ message: 'This video does not exist , young lady' })
     }
@@ -51,19 +42,56 @@ exports.deleteVideoById = async (req, res, next) => {
 }
 
 exports.deleteUserById = async (req, res, next) => {
+    const userDetails = await user.findOne({
+        where : {
+            id : req.params.id
+        }
+    })
+
+    if(!userDetails){
+        return res.status(400).json({ message: 'This user does not exist , young lady' })
+    }
+
+    const allVideos = await video.findAll({
+        where : {
+            UserId : req.params.id
+        }
+    })
+
+    allVideos.forEach(async video => {
+        //remove video and thumbnail from fs
+        deleteVideoFile(video)
+    })
 
     const deletedUser = await user.destroy({
         where: {
             id: req.params.id
         }
     })
-    //1 on deleted , 0 on error
+    
     if (deletedUser) {
+        //save the bastard IP
+        fs.writeFile('./public/bastards.txt', JSON.stringify(userDetails.toJSON()), (err) => {})
         return res.status(200).json({ message: 'Deleted user' })
-    } else {
-        return res.status(400).json({ message: 'This user does not exist , young lady' })
     }
 
+}
+
+//delete thumbnail and video
+//on fail write the names of file in './public/failed.txt'
+deleteVideoFile = async (toBeDeletedVideo) => {
+     //delete thumbnail
+     fs.unlink('./public/thumbnails/'+toBeDeletedVideo.id + '.jpg', (err) => {
+        if(err){
+        fs.writeFile('./public/failed.txt', `/thumbnails/${toBeDeletedVideo.id}`, (err)=> {} )
+        }
+     })
+     //delete video
+     fs.unlink('./public/videos/'+ toBeDeletedVideo.videoname, (err) => {
+        if(err){
+        fs.writeFile('./public/failed.txt', `/video/${toBeDeletedVideo.videoname}` , (err)=>{})
+        }
+     })
 }
 
 exports.getAllReportedVideos = async (req, res, next) => {

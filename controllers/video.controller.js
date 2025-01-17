@@ -5,17 +5,18 @@ const path = require('path')
 const generateThumbnail = require('../helper/generateThumbnail')
 const report = require('../models/report.model')
 const tempvideo = require('../models/tempvideo.model')
+const comment = require('../models/comment.model')
 
 exports.getVideos = async (req, res, next) => {
     const offsetBy = 0 + (8*req.params.number)
     const limitBy = 8
     try {
         let allVideos = await videos.findAndCountAll({
-            attributes: ['id', 'title', 'description', 'views', 'createdAt', 'UserId'],
+            attributes: ['id', 'title', 'description', 'views', 'createdAt', 'UserId' ],
             order: [['createdAt', 'DESC']],
             offset: offsetBy,
             limit: limitBy,
-            include: [{ model: user, attributes: ['username'] }, {model : tempvideo, attributes : ['createdAt']}]
+            include: [{ model: user, attributes: ['username'] }, {model : tempvideo, attributes : ['createdAt']}, {model : comment, attributes : ['id'] }]
         })
         return res.status(200).send(allVideos)
     } catch (error) {
@@ -141,3 +142,4 @@ exports.reportVideo = async (req, res, next) => {
         return res.status(400).json({ message: "Video doesn't exist, young lady" })
     }
 }
+
