@@ -18,11 +18,21 @@ require('./helper/cronJob')
 
 const app = express()
 
+//block non indian ip
+app.use(ipgeoblock({
+	geolite2: "./public/GeoLite2-Country.mmdb",
+	allowedCountries: [ "IN", "NP", "LK", "BT"]
+}));
 
 app.use(cors())
 
 //before serving static , compress it
 app.use(compression())
+
+//safety
+app.use(helmet({
+    contentSecurityPolicy: false,
+}))
 
 //serve index.html
 app.use(express.static(path.join(__dirname, "public/angular")));
@@ -55,7 +65,11 @@ app.use((err, req, res, next) => {
 })
 
 
-// create server local
-app.listen(process.env.PORT, (ex) => {
-    console.log(process.env.PORT)
-})
+//create prod server
+const options = {
+    key: fs.readFileSync('/etc/letsencrypt/live/bharattube.xyz/privkey.pem'),
+    cert: fs.readFileSync('/etc/letsencrypt/live/bharattube.xyz/fullchain.pem')
+};
+https.createServer(options, app).listen(443, () => {
+    console.log('API server running on https://bharattube.xyz');
+});

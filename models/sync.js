@@ -36,7 +36,4 @@ tempvideo.belongsTo(video)
 
 syncer = async () => { await sequelize.sync({}) }
 
-
-
-
 module.exports = syncer
