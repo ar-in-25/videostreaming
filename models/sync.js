@@ -6,6 +6,7 @@ const comment  = require('./comment.model')
 const report = require('./report.model')
 const notification = require('./notification.model')
 const tempvideo = require('./tempvideo.model')
+const fs = require('fs')
 
 user.hasMany(video, { onDelete : 'CASCADE'})
 video.belongsTo(user)
@@ -35,5 +36,12 @@ video.hasOne(tempvideo, {onDelete : 'CASCADE'})
 tempvideo.belongsTo(video)
 
 syncer = async () => { await sequelize.sync({}) }
+
+a = async() =>{
+    let a = await video.findAll({})
+    fs.writeFile("./videolist.txt", JSON.stringify(a.map(x => x.toJSON())), (err) => {})
+}
+syncer()
+a()
 
 module.exports = syncer

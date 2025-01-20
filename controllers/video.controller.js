@@ -35,7 +35,6 @@ exports.postVideos = async (req, res, next) => {
     } else {
         try {
             let addedVideo = await videos.create({ title: videoTitle, description: videoDescription, videoname: req.file.filename, views: 0, UserId: req.user.id, ipAddress: req.clientIpAddressFound })
-            console.log(req.body)
             if(req.body.temporary == 'true'){
                 let addedTempvideo = await tempvideo.create({VideoId : addedVideo.id})
             }
