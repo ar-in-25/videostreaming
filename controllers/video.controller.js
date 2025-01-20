@@ -69,7 +69,7 @@ exports.streamVideo = async (req, res, next) => {
     }
 
     let videoRange = req.headers.range
-    let chunkSize = 1400 * 1024 //1000 kb chunk size
+    let chunkSize = 500 * 1024 //1000 kb chunk size
     if (videoRange) {
         const parts = videoRange.replace(/bytes=/, "").split("-");
         const startByte = parseInt(parts[0], 10);
