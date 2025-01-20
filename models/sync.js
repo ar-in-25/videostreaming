@@ -37,13 +37,4 @@ tempvideo.belongsTo(video)
 
 syncer = async () => { await sequelize.sync({}) }
 
-a = async() =>{
-    let a = await video.findAll({
-        attributes : ['id','title']
-    })
-    fs.writeFile("./videolist.txt", JSON.stringify(a.map(x => x.toJSON())), (err) => {})
-}
-syncer()
-a()
-
 module.exports = syncer
