@@ -49,7 +49,7 @@ exports.postVideos = async (req, res, next) => {
 
 let videoDataCache = {}
 exports.streamVideo = async (req, res, next) => {
-    const file = ''
+    let file = ''
 
     //check if video exists
     let video = await videos.findOne({ where: { id: req.params.videoId } })
