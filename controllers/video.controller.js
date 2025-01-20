@@ -49,7 +49,6 @@ exports.postVideos = async (req, res, next) => {
 
 let videoDataCache = {}
 exports.streamVideo = async (req, res, next) => {
-    let file = ''
 
     //check if video exists
     let video = await videos.findOne({ where: { id: req.params.videoId } })
@@ -70,7 +69,7 @@ exports.streamVideo = async (req, res, next) => {
     }
 
     let videoRange = req.headers.range
-    let chunkSize = 2000 * 1024 //2000 kb chunk size
+    let chunkSize = 1400 * 1024 //1000 kb chunk size
     if (videoRange) {
         const parts = videoRange.replace(/bytes=/, "").split("-");
         const startByte = parseInt(parts[0], 10);
@@ -82,7 +81,7 @@ exports.streamVideo = async (req, res, next) => {
             chunkSize = (endByte - startByte) + 1
         }
         // const chunkSize = (endByte-startByte) + 1;
-        file = fs.createReadStream(videoPath, { start: startByte, end: endByte });
+        const file = fs.createReadStream(videoPath, { start: startByte, end: endByte });
         const head = {
             'Content-Range': `bytes ${startByte}-${endByte}/${videoSize}`,
             'Accept-Ranges': 'bytes',
@@ -97,12 +96,8 @@ exports.streamVideo = async (req, res, next) => {
             'Content-type': 'video/mp4'
         }
         res.writeHead(200, head)
-        file = fs.createReadStream(videoPath)
-        file.pipe(res)
+        fs.createReadStream(videoPath).pipe(res)
     }
-    req.on('close', () => {
-        file.destroy()
-    })
 }
 
 exports.getThumbnail = async (req, res, next) => {
