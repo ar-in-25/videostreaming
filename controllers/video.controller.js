@@ -12,7 +12,7 @@ exports.getVideos = async (req, res, next) => {
     const limitBy = 8
     try {
         let allVideos = await videos.findAndCountAll({
-            attributes: ['id', 'title', 'description', 'views', 'createdAt', 'UserId', 'videoname' ],
+            attributes: ['id', 'title', 'description', 'views', 'createdAt', 'UserId'],
             order: [['createdAt', 'DESC']],
             offset: offsetBy,
             limit: limitBy,
