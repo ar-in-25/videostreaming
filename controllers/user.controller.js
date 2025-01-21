@@ -24,10 +24,11 @@ exports.getUserVideos = async (req, res, next) => {
     let data = await video.findAll({
         where: { UserId: req.params.UserId },
         attributes : ['id','title','description','views','createdAt','UserId'],
-        include : {
+        include : [{
             model : user,
             attributes : ['username']
-        }
+        },
+        {model : comment, attributes : ['id'] }]
     })
     // let finalData = data.map(x => x.toJSON())
     return res.status(200).json(data)

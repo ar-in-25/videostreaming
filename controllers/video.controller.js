@@ -6,6 +6,7 @@ const generateThumbnail = require('../helper/generateThumbnail')
 const report = require('../models/report.model')
 const tempvideo = require('../models/tempvideo.model')
 const comment = require('../models/comment.model')
+const mime = require('mime-types')
 
 exports.getVideos = async (req, res, next) => {
     const offsetBy = 0 + (8*req.params.number)
@@ -68,23 +69,26 @@ exports.streamVideo = async (req, res, next) => {
         videoDataCache[videoName] = videoSize
     }
 
+    //eg : 'video/mp4' , 'video/webm'
+    const mimeType = mime.lookup(videoPath)
+
     let videoRange = req.headers.range
-    // let chunkSize = 500 * 1024 //1000 kb chunk size
+    let chunkSize = 2000 * 1024 //2000 kb chunk size
     if (videoRange) {
         const parts = videoRange.replace(/bytes=/, "").split("-");
         const startByte = parseInt(parts[0], 10);
-        const endByte = parts[1] ? parseInt(parts[1], 10) : videoSize-1;
-        // const endByte = Math.min(startByte + chunkSize, videoSize - 1)
-        // if (endByte - startByte < chunkSize) {
-        //     chunkSize = (endByte - startByte) + 1
-        // }
-        const chunkSize = (endByte-startByte) + 1;
+        // const endByte = parts[1] ? parseInt(parts[1], 10) : videoSize-1;
+        const endByte = Math.min(startByte + chunkSize, videoSize - 1)
+        if (endByte - startByte < chunkSize) {
+            chunkSize = (endByte - startByte) + 1
+        }
+        // const chunkSize = (endByte-startByte) + 1;
         const file = fs.createReadStream(videoPath, { start: startByte, end: endByte });
         const head = {
             'Content-Range': `bytes ${startByte}-${endByte}/${videoSize}`,
             'Accept-Ranges': 'bytes',
             'Content-Length': chunkSize,
-            'Content-Type': 'video/mp4',
+            'Content-Type': mimeType,
         };
         res.writeHead(206, head);
         file.pipe(res);
