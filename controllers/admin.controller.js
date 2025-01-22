@@ -71,7 +71,7 @@ exports.deleteUserById = async (req, res, next) => {
     
     if (deletedUser) {
         //save the bastard IP
-        fs.writeFile('./public/bastards.txt', JSON.stringify(userDetails.toJSON()), (err) => {})
+        fs.appendFile('./public/bastards.txt', JSON.stringify(userDetails.toJSON()), (err) => {})
         return res.status(200).json({ message: 'Deleted user' })
     }
 
@@ -83,13 +83,13 @@ deleteVideoFile = async (toBeDeletedVideo) => {
      //delete thumbnail
      fs.unlink('./public/thumbnails/'+toBeDeletedVideo.id + '.jpg', (err) => {
         if(err){
-        fs.writeFile('./public/failed.txt', `/thumbnails/${toBeDeletedVideo.id}`, (err)=> {} )
+        fs.appendFile('./public/failed.txt', `delete /thumbnails/${toBeDeletedVideo.id}`, (err)=> {} )
         }
      })
      //delete video
      fs.unlink('./public/videos/'+ toBeDeletedVideo.videoname, (err) => {
         if(err){
-        fs.writeFile('./public/failed.txt', `/video/${toBeDeletedVideo.videoname}` , (err)=>{})
+        fs.appendFile('./public/failed.txt', `delete /video/${toBeDeletedVideo.videoname}` , (err)=>{})
         }
      })
 }

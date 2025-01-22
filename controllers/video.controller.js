@@ -8,6 +8,7 @@ const tempvideo = require('../models/tempvideo.model')
 const comment = require('../models/comment.model')
 const mime = require('mime-types')
 
+
 exports.getVideos = async (req, res, next) => {
     const offsetBy = 0 + (8*req.params.number)
     const limitBy = 8
@@ -29,6 +30,9 @@ exports.getVideos = async (req, res, next) => {
 exports.postVideos = async (req, res, next) => {
     let videoTitle = req.body.title ?? ""
     let videoDescription = req.body.description ?? ""
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    const newFileName = uniqueSuffix + "-" + req.file.originalname
+
 
     if (!req.file) {
         return res.status(400).json({ message: "Video file is required" })
@@ -36,11 +40,11 @@ exports.postVideos = async (req, res, next) => {
         return res.status(400).json({ message: 'Title is required.' })
     } else {
         try {
-            let addedVideo = await videos.create({ title: videoTitle, description: videoDescription, videoname: req.file.filename, views: 0, UserId: req.user.id, ipAddress: req.clientIpAddressFound })
+            let addedVideo = await videos.create({ title: videoTitle, description: videoDescription, videoname: newFileName, views: 0, UserId: req.user.id, ipAddress: req.clientIpAddressFound })
             if(req.body.temporary == 'true'){
                 let addedTempvideo = await tempvideo.create({VideoId : addedVideo.id})
             }
-            generateThumbnail(req.file.filename, addedVideo.id)
+            generateThumbnail(req.file.filename, addedVideo.id, newFileName)
             return res.status(200).json({ message: "Upload completed" })
         } catch (error) {
             return res.status(500).json({ message: error })
