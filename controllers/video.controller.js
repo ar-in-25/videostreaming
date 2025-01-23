@@ -77,7 +77,7 @@ exports.streamVideo = async (req, res, next) => {
     const mimeType = mime.lookup(videoPath)
 
     let videoRange = req.headers.range
-    let chunkSize = 2000 * 1024 //2000 kb chunk size
+    let chunkSize = 2048000 //2000 kb chunk size
     if (videoRange) {
         const parts = videoRange.replace(/bytes=/, "").split("-");
         const startByte = parseInt(parts[0], 10);
@@ -87,7 +87,7 @@ exports.streamVideo = async (req, res, next) => {
             chunkSize = (endByte - startByte) + 1
         }
         // const chunkSize = (endByte-startByte) + 1;
-        const file = fs.createReadStream(videoPath, { start: startByte, end: endByte });
+        const file = fs.createReadStream(videoPath, { start: startByte, end: endByte, highWaterMark: 1048576  } );
         const head = {
             'Content-Range': `bytes ${startByte}-${endByte}/${videoSize}`,
             'Accept-Ranges': 'bytes',
