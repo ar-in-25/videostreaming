@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1737726995748,
+  "timestamp": 1737731006397,
   "index": "/index.html",
   "assetGroups": [
     {
@@ -64,7 +64,21 @@
       "patterns": []
     }
   ],
-  "dataGroups": [],
+  "dataGroups": [
+    {
+      "name": "apireq",
+      "patterns": [
+        "\\/server\\/[^/]*"
+      ],
+      "strategy": "freshness",
+      "maxSize": 0,
+      "maxAge": 0,
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "version": 1
+    }
+  ],
   "hashTable": {
     "/chunk-2OCYWG4R.js": "dcf67517ef3577a5086590d34d5795e15863fca9",
     "/chunk-3NUN5NFM.js": "fb35a8615d7b77e1951fa5860a60db850cc057dd",
