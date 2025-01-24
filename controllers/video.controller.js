@@ -33,6 +33,8 @@ exports.postVideos = async (req, res, next) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
     const newFileName = uniqueSuffix + "-" + req.file.originalname
 
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+
 
     if (!req.file) {
         return res.status(400).json({ message: "Video file is required" })
