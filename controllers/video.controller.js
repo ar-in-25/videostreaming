@@ -89,7 +89,7 @@ exports.streamVideo = async (req, res, next) => {
         //     chunkSize = (endByte - startByte) + 1
         // }
         const chunkSize = (endByte-startByte) + 1;
-        const file = fs.createReadStream(videoPath, { start: startByte, end: endByte, highWaterMark: 1048576  } );
+        const file = fs.createReadStream(videoPath, { start: startByte, end: endByte} );
         const head = {
             'Content-Range': `bytes ${startByte}-${endByte}/${videoSize}`,
             'Accept-Ranges': 'bytes',
