@@ -18,5 +18,7 @@ router.get("/thumbnail/:id", videocontroller.getThumbnail)
 
 router.post("/report", videocontroller.reportVideo)
 
+router.post("/search", videocontroller.searchVideo)
+
 
 module.exports = router

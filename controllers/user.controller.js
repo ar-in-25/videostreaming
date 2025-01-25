@@ -153,3 +153,17 @@ exports.amISubscribed = async (req, res, next) => {
         return res.status(200).json({message : "no"})
     }
 }
+
+cacheUserName = undefined
+exports.findUserByName = async (req, res, next) => {
+    if(cacheUserName == undefined || cacheUserName[1] + 300000 < Date.now()){
+        let list = await user.findAll({
+            attributes : ['id','username']
+        })
+        cacheUserName = [list, Date.now()]
+    }
+    let names = cacheUserName[0].map(x => x.toJSON()).filter(x => x.username.includes(req.body
+        .name))
+    return res.status(200).json(names)
+  
+}

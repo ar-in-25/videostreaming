@@ -151,3 +151,15 @@ exports.reportVideo = async (req, res, next) => {
     }
 }
 
+cacheVideoName = undefined
+exports.searchVideo = async (req, res, next) => {
+    if(cacheVideoName == undefined || cacheVideoName[1] + 300000 < Date.now()){
+        let list = await videos.findAll({
+            attributes : ['id','title']
+        })
+        cacheVideoName = [list, Date.now()]
+    }
+    let names = cacheVideoName[0].map(x => x.toJSON()).filter(x => x.title.includes(req.body.title))
+    return res.status(200).json(names)
+  
+}

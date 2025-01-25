@@ -11,10 +11,13 @@ router.get('/subscription', authenticateToken, usercontroller.getSubscriptionLis
 
 router.get("/amisubscribed/:userid",authenticateToken, usercontroller.amISubscribed)
 
+router.post("/search", usercontroller.findUserByName)
+
 router.post('/subscribe', authenticateToken, usercontroller.subscribeToUser)
 
 router.post('/notifications', authenticateToken, usercontroller.getNotifications)
 
 router.post('/notifications/read',authenticateToken, usercontroller.readNotifications )
+
 
 module.exports = router
