@@ -7,7 +7,7 @@ const fs = require('fs')
 cron.schedule('0 0 * * *', async () => {
   try {
     const now = new Date();
-    const cutoff = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000); // 30 days
+    const cutoff = new Date(now.getTime() - 15 * 24 * 60 * 60 * 1000); // 15 days
 
       const allVideo = await Video.findAll({
           where: {
