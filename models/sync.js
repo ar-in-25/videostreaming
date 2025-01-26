@@ -5,8 +5,6 @@ const subscription = require('./subscription.model')
 const comment  = require('./comment.model')
 const report = require('./report.model')
 const notification = require('./notification.model')
-const tempvideo = require('./tempvideo.model')
-const fs = require('fs')
 
 user.hasMany(video, { onDelete : 'CASCADE'})
 video.belongsTo(user)
@@ -31,9 +29,6 @@ comment.hasMany(notification, {onDelete : 'CASCADE'})
 notification.belongsTo(user)
 notification.belongsTo(video)
 notification.belongsTo(comment)
-
-video.hasOne(tempvideo, {onDelete : 'CASCADE'})
-tempvideo.belongsTo(video)
 
 syncer = async () => { await sequelize.sync({}) }
 

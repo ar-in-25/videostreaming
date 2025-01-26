@@ -4,7 +4,6 @@ const bcrypt = require('bcryptjs')
 
 
 exports.loginUser = async (req, res, next) => {
-    console.log(req.body)
     let user = await users.findOne({ where: { username: req.body.username } })
     if (!user) {
         return res.status(404).json({ message: 'User does not exist' })

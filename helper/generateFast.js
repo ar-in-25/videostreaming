@@ -10,6 +10,7 @@ function generateFast(oldpath, newpath) {
         ])
         .save(`public/videos/${newpath}`)
         .on('end', () => {
+            console.log('fast generated')
             fs.unlink(`public/videos/${oldpath}`, (err) => {
                 if (err) {
                     fs.appendFile('./public/failed.txt', `delete /video/${oldpath}`, (err) => { })

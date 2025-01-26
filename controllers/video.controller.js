@@ -43,9 +43,6 @@ exports.postVideos = async (req, res, next) => {
     } else {
         try {
             let addedVideo = await videos.create({ title: videoTitle, description: videoDescription, videoname: newFileName, views: 0, UserId: req.user.id, ipAddress: req.clientIpAddressFound })
-            if(req.body.temporary == 'true'){
-                let addedTempvideo = await tempvideo.create({VideoId : addedVideo.id})
-            }
             generateThumbnail(req.file.filename, addedVideo.id, newFileName)
             return res.status(200).json({ message: "Upload completed" })
         } catch (error) {

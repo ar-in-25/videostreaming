@@ -24,7 +24,7 @@ const app = express()
 // 	allowedCountries: [ "IN", "NP", "LK", "BT"]
 // }));
 
-app.use(cors())
+// app.use(cors())
 
 //before serving static , compress it
 app.use(compression())

@@ -5,7 +5,6 @@ const video = require('../models/video.model')
 
 
 exports.getCommentForVideo = async (req, res, next) => {
-    // const videoId = req.params.videoId
     let data = await comment.findAll({
         where: {
             VideoId: req.params.videoId,
