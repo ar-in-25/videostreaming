@@ -155,7 +155,7 @@ exports.searchVideo = async (req, res, next) => {
         })
         cacheVideoName = [list, Date.now()]
     }
-    let names = cacheVideoName[0].map(x => x.toJSON()).filter(x => x.title.includes(req.body.title))
+    let names = cacheVideoName[0].map(x => x.toJSON()).filter(x => x.title.toLowerCase().includes(req.body.title.toLowerCase()))
     return res.status(200).json(names)
   
 }

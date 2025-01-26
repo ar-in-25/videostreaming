@@ -162,8 +162,7 @@ exports.findUserByName = async (req, res, next) => {
         })
         cacheUserName = [list, Date.now()]
     }
-    let names = cacheUserName[0].map(x => x.toJSON()).filter(x => x.username.includes(req.body
-        .name))
+    let names = cacheUserName[0].map(x => x.toJSON()).filter(x => x.username.toLowerCase().includes(req.body.name.toLowerCase()))
     return res.status(200).json(names)
   
 }
