@@ -4,7 +4,6 @@ const fs = require('fs')
 const path = require('path')
 const generateThumbnail = require('../helper/generateThumbnail')
 const report = require('../models/report.model')
-const tempvideo = require('../models/tempvideo.model')
 const comment = require('../models/comment.model')
 const mime = require('mime-types')
 
@@ -18,7 +17,7 @@ exports.getVideos = async (req, res, next) => {
             order: [['createdAt', 'DESC']],
             offset: offsetBy,
             limit: limitBy,
-            include: [{ model: user, attributes: ['username'] }, {model : tempvideo, attributes : ['createdAt']}, {model : comment, attributes : ['id'] }],
+            include: [{ model: user, attributes: ['username'] }, {model : comment, attributes : ['id'] }],
             distinct : true
         })
         return res.status(200).send(allVideos)
