@@ -19,7 +19,7 @@ exports.registerUser = async (req, res, next) => {
     let hashedPassword = await bcrypt.hash(req.body.password, 1)
     try {
         let user = await users.create({username: req.body.username, password: hashedPassword, isAdmin: false, ipAddress : req.clientIpAddressFound});
-        return res.status(200).json({ message: "User registered." })
+        return res.status(200).json({ message: "User registered.", token : tokengenerator({ id: user.id, username: user.username, isAdmin : user.isAdmin }) })
     } catch (err) {
         if (err.name == 'SequelizeUniqueConstraintError') {
             return res.status(400).json({ message: 'Username already taken. Choose another.' })
