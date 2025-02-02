@@ -7,7 +7,7 @@ const fs = require('fs')
 cron.schedule('0 0 * * *', async () => {
   try {
     const now = new Date();
-    const cutoff = new Date(now.getTime() - 45 * 24 * 60 * 60 * 1000); // 60 days
+    const cutoff = new Date(now.getTime() - 120 * 24 * 60 * 60 * 1000); // 120 days
 
       const allVideo = await Video.findAll({
           where: {
@@ -30,7 +30,7 @@ cron.schedule('0 0 * * *', async () => {
 
 
 
-    console.log(`post(s) deleted that were older than 30 days.`);
+    console.log(`post(s) deleted that were older than 120 days.`);
   } catch (error) {
     console.error('Error deleting posts:', error);
   }
