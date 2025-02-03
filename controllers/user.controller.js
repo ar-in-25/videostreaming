@@ -3,6 +3,7 @@ const video = require('../models/video.model')
 const subscription  = require('../models/subscription.model')
 const notification = require('../models/notification.model')
 const comment = require('../models/comment.model')
+const deleteVideoFile = require('../helper/deleteVideo')
 
 exports.getUser = async (req, res, next) => {
     let foundUser = await user.findOne({
@@ -166,3 +167,47 @@ exports.findUserByName = async (req, res, next) => {
     return res.status(200).json(names)
   
 }
+
+exports.deleteVideoById = async (req, res, next) => {
+    const toBeDeletedVideo = await video.findOne({
+        where : {
+            id : req.params.id
+        }
+    })
+    
+    if(toBeDeletedVideo && toBeDeletedVideo.UserId != req.user.id){
+        return res.status(400).json({message : "Hacker spotted!"})
+    }
+
+    const deletedVideo = await video.destroy({
+        where: {
+            id: req.params.id
+        }
+    })
+
+    //1 on deleted , 0 on error
+    if (deletedVideo) {
+        deleteVideoFile(toBeDeletedVideo)
+        return res.status(200).json({ message: 'Deleted video' })
+    } else {
+        return res.status(400).json({ message: 'This video does not exist , young lady' })
+    }
+
+}
+
+//delete thumbnail and video
+//on fail write the names of file in './public/failed.txt'
+// deleteVideoFile = async (toBeDeletedVideo) => {
+//      //delete thumbnail
+//      fs.unlink('./public/thumbnails/'+toBeDeletedVideo.id + '.jpg', (err) => {
+//         if(err){
+//         fs.appendFile('./public/failed.txt', `delete /thumbnails/${toBeDeletedVideo.id}`, (err)=> {} )
+//         }
+//      })
+//      //delete video
+//      fs.unlink('./public/videos/'+ toBeDeletedVideo.videoname, (err) => {
+//         if(err){
+//         fs.appendFile('./public/failed.txt', `delete /video/${toBeDeletedVideo.videoname}` , (err)=>{})
+//         }
+//      })
+// }

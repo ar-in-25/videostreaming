@@ -14,7 +14,7 @@ user.hasMany(subscription, {foreignKey : 'subscribedto_id'})
 subscription.belongsTo(user, {as : 'subscriber', foreignKey : 'subscriber_id'})
 subscription.belongsTo(user, {as : 'subscribedto', foreignKey : 'subscribedto_id'})
 
-user.hasMany(comment) //gets list of comments with foreign key UserId in coment table
+user.hasMany(comment, {onDelete : 'CASCADE'}) //gets list of comments with foreign key UserId in coment table
 comment.belongsTo(user) //get one user whose id match userid in comment table
 video.hasMany(comment, {onDelete : 'CASCADE'})
 comment.belongsTo(video)

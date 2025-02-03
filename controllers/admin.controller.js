@@ -4,6 +4,7 @@ const video = require('../models/video.model')
 const sequelize = require('../models/sequelize')
 const report = require('../models/report.model')
 const fs = require('fs')
+const deleteVideoFile = require('../helper/deleteVideo')
 
 exports.deleteCommentById = async (req, res, next) => {
     const deletedComment = await comment.destroy({
@@ -79,20 +80,20 @@ exports.deleteUserById = async (req, res, next) => {
 
 //delete thumbnail and video
 //on fail write the names of file in './public/failed.txt'
-deleteVideoFile = async (toBeDeletedVideo) => {
-     //delete thumbnail
-     fs.unlink('./public/thumbnails/'+toBeDeletedVideo.id + '.jpg', (err) => {
-        if(err){
-        fs.appendFile('./public/failed.txt', `delete /thumbnails/${toBeDeletedVideo.id}`, (err)=> {} )
-        }
-     })
-     //delete video
-     fs.unlink('./public/videos/'+ toBeDeletedVideo.videoname, (err) => {
-        if(err){
-        fs.appendFile('./public/failed.txt', `delete /video/${toBeDeletedVideo.videoname}` , (err)=>{})
-        }
-     })
-}
+// deleteVideoFile = async (toBeDeletedVideo) => {
+//      //delete thumbnail
+//      fs.unlink('./public/thumbnails/'+toBeDeletedVideo.id + '.jpg', (err) => {
+//         if(err){
+//         fs.appendFile('./public/failed.txt', `delete /thumbnails/${toBeDeletedVideo.id}`, (err)=> {} )
+//         }
+//      })
+//      //delete video
+//      fs.unlink('./public/videos/'+ toBeDeletedVideo.videoname, (err) => {
+//         if(err){
+//         fs.appendFile('./public/failed.txt', `delete /video/${toBeDeletedVideo.videoname}` , (err)=>{})
+//         }
+//      })
+// }
 
 exports.getAllReportedVideos = async (req, res, next) => {
     let r = await video.findAll({

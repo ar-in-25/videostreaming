@@ -19,5 +19,7 @@ router.post('/notifications', authenticateToken, usercontroller.getNotifications
 
 router.post('/notifications/read',authenticateToken, usercontroller.readNotifications )
 
+router.delete('/video/:id',authenticateToken, usercontroller.deleteVideoById)
+
 
 module.exports = router
