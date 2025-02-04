@@ -60,6 +60,7 @@ exports.streamVideo = async (req, res, next) => {
         video = videoCache[req.params.videoId]
     }else{
         video = await videos.findOne({ where: { id: req.params.videoId } })
+        videoCache[req.params.videoId] = video
     }
     
     if (!video) {
