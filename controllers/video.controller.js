@@ -51,10 +51,17 @@ exports.postVideos = async (req, res, next) => {
 }
 
 let videoDataCache = {}
+let videoCache = {}
 exports.streamVideo = async (req, res, next) => {
 
     //check if video exists
-    let video = await videos.findOne({ where: { id: req.params.videoId } })
+    let video
+    if(videoCache[req.params.videoId]){
+        video = videoCache[req.params.videoId]
+    }else{
+        video = await videos.findOne({ where: { id: req.params.videoId } })
+    }
+    
     if (!video) {
         return res.status(400).json({ message: "Video doesn't exist" })
     }
