@@ -47,6 +47,7 @@ exports.postCommentForVideo = async (req, res, next) => {
         //if comment is created, add a notification
         if (createdComment) {
             //if comment is not from video uploader , add notification
+            //adding notification for video owner
             if(req.user.id != videoObject.UserId) {
                 let createdNotification = await notification.create({ viewed: false, CommentId: createdComment.id, UserId: videoObject.UserId , VideoId : videoObject.id})
             }
@@ -84,10 +85,31 @@ exports.postSubcommentForComment = async (req, res, next) => {
     if (parentComment) {
         let createdComment = await comment.create({ comment: req.body.comment, UserId: req.user.id, VideoId: req.body.VideoId, parentcommentid: req.body.parentcommentid })
         if (createdComment) {
-            //dont create notification for : 
-            //reply to your own comment
+            //dont create notification for reply to your own comment
             if(req.user.id != parentComment.UserId) {
-                let createdNotification = await notification.create({ viewed: false, CommentId: createdComment.id, UserId: parentComment.UserId, VideoId :  req.body.VideoId })
+                //creating notification for the original comment owner
+                const pattern =  /@([^\s@]+)/g; // This matches any word starting with '@' followed by non-space characters
+                const matches = [...req.body.comment.matchAll(pattern)].map(match => match[1]);
+                //if there is an @username
+                if(matches.length > 0){
+                    //find the user
+                    let taggedUser = await user.findOne({
+                        where : {
+                            username : matches[0]
+                        }
+                    })
+                    //if there is that user, create notification for him
+                    if(taggedUser){
+                        let createdNotification = await notification.create({ viewed: false, CommentId: createdComment.id, UserId: taggedUser.id, VideoId :  req.body.VideoId })
+                    }else{
+                        //else create notification for parent comment user
+                        let createdNotification = await notification.create({ viewed: false, CommentId: createdComment.id, UserId: parentComment.UserId, VideoId :  req.body.VideoId })
+                    }
+                }else{
+                        //else create notification for parent comment user
+                        let createdNotification = await notification.create({ viewed: false, CommentId: createdComment.id, UserId: parentComment.UserId, VideoId :  req.body.VideoId })
+                }
+                
             }
             return res.status(200).json({ message: "Added comment" })
         } else {
