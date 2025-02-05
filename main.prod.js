@@ -56,12 +56,12 @@ app.use("/server/admin", adminrouter)
 
 //send angular index.html and use its routing
 app.get('*', (req, res, next) =>{
-    res.sendFile(path.join(__dirname, 'public', 'angular', 'index.html'))
+    return res.sendFile(path.join(__dirname, 'public', 'angular', 'index.html'))
 })
 
 //handle any error
 app.use((err, req, res, next) => {
-    res.status(500).send('Something broke!')
+    return res.status(500).send('Something broke!')
 })
 
 
