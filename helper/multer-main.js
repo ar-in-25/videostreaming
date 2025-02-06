@@ -28,6 +28,6 @@ const storage = multer.diskStorage({
 
 // const upload = multer({dest : 'public/videos', limits : {fileSize : 5242880}})
 
-const upload = multer({storage : storage, limits : {fileSize : 100*1024*1024}, fileFilter : filefilter})
+const upload = multer({storage : storage, limits : {fileSize : 50*1024*1024}, fileFilter : filefilter})
 
 module.exports = upload
