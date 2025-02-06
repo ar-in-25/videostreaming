@@ -8,17 +8,17 @@ const multererrorhandler = require('../middlewares/multerErrorHandler')
 
 router.get("/page/:number", videocontroller.getVideos)
 
-router.post("/upload",authenticatetoken, upload.single('video'), multererrorhandler,  videocontroller.postVideos)
-
-router.get("/:videoId", videocontroller.streamVideo)
-
 router.get("/detail/:videoId", videocontroller.getVideoDetail)
 
 router.get("/thumbnail/:id", videocontroller.getThumbnail)
 
+router.get("/:videoId", videocontroller.streamVideo)
+
 router.post("/report", videocontroller.reportVideo)
 
 router.post("/search", videocontroller.searchVideo)
+
+router.post("/upload",authenticatetoken, upload.single('video'), multererrorhandler,  videocontroller.postVideos)
 
 
 module.exports = router
