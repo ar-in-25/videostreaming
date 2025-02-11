@@ -20,5 +20,7 @@ router.post("/search", videocontroller.searchVideo)
 
 router.post("/upload",authenticatetoken, upload.single('video'), multererrorhandler,  videocontroller.postVideos)
 
+router.post("/action",authenticatetoken, videocontroller.likedislikeVideo)
+
 
 module.exports = router
