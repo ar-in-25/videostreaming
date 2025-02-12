@@ -12,6 +12,8 @@ router.get("/detail/:videoId", videocontroller.getVideoDetail)
 
 router.get("/thumbnail/:id", videocontroller.getThumbnail)
 
+router.get("/trending", videocontroller.currentViewedVideos)
+
 router.get("/:videoId", videocontroller.streamVideo)
 
 router.post("/report", videocontroller.reportVideo)

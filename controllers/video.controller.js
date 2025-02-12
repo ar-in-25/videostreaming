@@ -29,6 +29,31 @@ exports.getVideos = async (req, res, next) => {
     }
 }
 
+trendingVideoCache = undefined
+exports.currentViewedVideos = async (req, res, next) => {
+    try {
+        if(trendingVideoCache){
+        // console.log(trendingVideoCache)
+        }
+        if(trendingVideoCache && trendingVideoCache.time + 300000 > Date.now()){
+            return res.status(200).json(trendingVideoCache.cache)
+        }
+
+        let allVideos = await videos.findAll({
+            attributes: ['id', 'title', 'description', 'views', 'updatedAt', 'UserId'],
+            order: [['updatedAt', 'DESC']],
+            offset: 0,
+            limit: 8,
+            include: [{ model: user, attributes: ['username'] }, { model: comment, attributes: ['id'] }],
+            distinct: true
+        })
+        trendingVideoCache = {cache : allVideos, time : Date.now()}
+        return res.status(200).json(allVideos)
+    }catch (error) {
+        return res.status(500).json({ message: error })
+    }
+}
+
 exports.postVideos = async (req, res, next) => {
     let videoTitle = req.body.title ?? ""
     let videoDescription = req.body.description ?? ""
