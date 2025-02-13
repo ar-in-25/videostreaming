@@ -55,9 +55,9 @@ app.use("/server/comment", commentrouter)
 app.use("/server/admin", adminrouter)
 
 
-app.get('/googlef4a5dfd40089f9e0.html', (req, res, next) =>{
-    return res.sendFile(path.join(__dirname, 'public', 'angular', 'googlef4a5dfd40089f9e0.html'))
-})
+// app.get('/googlef4a5dfd40089f9e0.html', (req, res, next) =>{
+//     return res.sendFile(path.join(__dirname, 'public', 'angular', 'googlef4a5dfd40089f9e0.html'))
+// })
 
 //send angular index.html and use its routing
 app.get('*', (req, res, next) =>{
