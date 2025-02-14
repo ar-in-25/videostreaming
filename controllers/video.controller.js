@@ -148,6 +148,7 @@ exports.getThumbnail = async (req, res, next) => {
 
 //use only with streaming video api because views counter is attached to this
 //can't use with streamvideo because it makes a request for every forward in video
+uniqueviewers = {}
 exports.getVideoDetail = async (req, res, next) => {
     let videoDetail = await videos.findOne({
         where: {
@@ -179,8 +180,13 @@ exports.getVideoDetail = async (req, res, next) => {
         attributes: ['UserId', 'action']
     })
 
-    //incrementing view by 1 on video
-    await videoDetail.increment('views', { by: 1 });
+    let token = req.clientIpAddressFound + '-' + req.params.videoId
+    if(uniqueviewers[token] == undefined || uniqueviewers[token].date != new Date().getDate()){
+        //incrementing view by 1 on video
+        await videoDetail.increment('views', { by: 1 });
+        uniqueviewers[token] = {date : new Date().getDate()}
+    }
+    
     return res.status(200).json({ videoDetail: videoDetail, sub: totalsubscribers.count, action: likesdislikes })
 
 }
