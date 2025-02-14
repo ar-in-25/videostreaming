@@ -4,7 +4,7 @@ const videocontroller = require('../controllers/video.controller')
 const upload = require('../helper/multer-main')
 const authenticatetoken = require('../middlewares/authenticatetoken')
 const multererrorhandler = require('../middlewares/multerErrorHandler')
-
+const blockvideos = require('../middlewares/blockvideo')
 
 router.get("/page/:number", videocontroller.getVideos)
 
@@ -20,7 +20,7 @@ router.post("/report", videocontroller.reportVideo)
 
 router.post("/search", videocontroller.searchVideo)
 
-router.post("/upload",authenticatetoken, upload.single('video'), multererrorhandler,  videocontroller.postVideos)
+router.post("/upload", blockvideos, authenticatetoken, upload.single('video'), multererrorhandler,  videocontroller.postVideos)
 
 router.post("/action",authenticatetoken, videocontroller.likedislikeVideo)
 

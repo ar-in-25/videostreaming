@@ -32,10 +32,10 @@ exports.getVideos = async (req, res, next) => {
 trendingVideoCache = undefined
 exports.currentViewedVideos = async (req, res, next) => {
     try {
-        if(trendingVideoCache){
-        // console.log(trendingVideoCache)
+        if (trendingVideoCache) {
+            // console.log(trendingVideoCache)
         }
-        if(trendingVideoCache && trendingVideoCache.time + 300000 > Date.now()){
+        if (trendingVideoCache && trendingVideoCache.time + 300000 > Date.now()) {
             return res.status(200).json(trendingVideoCache.cache)
         }
 
@@ -47,14 +47,16 @@ exports.currentViewedVideos = async (req, res, next) => {
             include: [{ model: user, attributes: ['username'] }, { model: comment, attributes: ['id'] }],
             distinct: true
         })
-        trendingVideoCache = {cache : allVideos, time : Date.now()}
+        trendingVideoCache = { cache: allVideos, time: Date.now() }
         return res.status(200).json(allVideos)
-    }catch (error) {
+    } catch (error) {
         return res.status(500).json({ message: error })
     }
 }
 
+
 exports.postVideos = async (req, res, next) => {
+
     let videoTitle = req.body.title ?? ""
     let videoDescription = req.body.description ?? ""
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
@@ -78,62 +80,65 @@ exports.postVideos = async (req, res, next) => {
 let videoDataCache = {}
 let videoCache = {}
 exports.streamVideo = async (req, res, next) => {
-
-    //check if video exists
-    let video
-    if (videoCache[req.params.videoId]) {
-        video = videoCache[req.params.videoId]
-    } else {
-        video = await videos.findOne({ where: { id: req.params.videoId } })
-        videoCache[req.params.videoId] = video
-    }
-
-    if (!video) {
-        return res.status(400).json({ message: "Video doesn't exist" })
-    }
-
-    //continue with streaming
-    let videoName = video.videoname
-    let videoPath = `public/videos/${videoName}`
-
-    let videoSize
-    if (videoDataCache[videoName]) {
-        videoSize = videoDataCache[videoName]
-    } else {
-        videoSize = fs.statSync(videoPath).size
-        videoDataCache[videoName] = videoSize
-    }
-
-    //eg : 'video/mp4' , 'video/webm'
-    const mimeType = mime.lookup(videoPath)
-
-    let videoRange = req.headers.range
-    let chunkSize = 1024 * 1024 //2000 kb chunk size
-    if (videoRange) {
-        const parts = videoRange.replace(/bytes=/, "").split("-");
-        const startByte = parseInt(parts[0], 10);
-        // const endByte = parts[1] ? parseInt(parts[1], 10) : videoSize-1;
-        const endByte = Math.min(startByte + chunkSize, videoSize - 1)
-        if (endByte - startByte < chunkSize) {
-            chunkSize = (endByte - startByte) + 1
+    try {
+        //check if video exists
+        let video
+        if (videoCache[req.params.videoId]) {
+            video = videoCache[req.params.videoId]
+        } else {
+            video = await videos.findOne({ where: { id: req.params.videoId } })
+            videoCache[req.params.videoId] = video
         }
-        // const chunkSize = (endByte-startByte) + 1;
-        const file = fs.createReadStream(videoPath, { start: startByte, end: endByte });
-        const head = {
-            'Content-Range': `bytes ${startByte}-${endByte}/${videoSize}`,
-            'Accept-Ranges': 'bytes',
-            'Content-Length': chunkSize,
-            'Content-Type': mimeType,
-        };
-        res.writeHead(206, head);
-        file.pipe(res);
-    } else {
-        let head = {
-            'Content-length': videoSize,
-            'Content-type': 'video/mp4'
+
+        if (!video) {
+            return res.status(400).json({ message: "Video doesn't exist" })
         }
-        res.writeHead(200, head)
-        fs.createReadStream(videoPath).pipe(res)
+
+        //continue with streaming
+        let videoName = video.videoname
+        let videoPath = `public/videos/${videoName}`
+
+        let videoSize
+        if (videoDataCache[videoName]) {
+            videoSize = videoDataCache[videoName]
+        } else {
+            videoSize = fs.statSync(videoPath).size
+            videoDataCache[videoName] = videoSize
+        }
+
+        //eg : 'video/mp4' , 'video/webm'
+        const mimeType = mime.lookup(videoPath)
+
+        let videoRange = req.headers.range
+        let chunkSize = 1024 * 1024 //2000 kb chunk size
+        if (videoRange) {
+            const parts = videoRange.replace(/bytes=/, "").split("-");
+            const startByte = parseInt(parts[0], 10);
+            // const endByte = parts[1] ? parseInt(parts[1], 10) : videoSize-1;
+            const endByte = Math.min(startByte + chunkSize, videoSize - 1)
+            if (endByte - startByte < chunkSize) {
+                chunkSize = (endByte - startByte) + 1
+            }
+            // const chunkSize = (endByte-startByte) + 1;
+            const file = fs.createReadStream(videoPath, { start: startByte, end: endByte });
+            const head = {
+                'Content-Range': `bytes ${startByte}-${endByte}/${videoSize}`,
+                'Accept-Ranges': 'bytes',
+                'Content-Length': chunkSize,
+                'Content-Type': mimeType,
+            };
+            res.writeHead(206, head);
+            file.pipe(res);
+        } else {
+            let head = {
+                'Content-length': videoSize,
+                'Content-type': 'video/mp4'
+            }
+            res.writeHead(200, head)
+            fs.createReadStream(videoPath).pipe(res)
+        }
+    } catch (err) {
+        res.status(500).json({ message: err })
     }
 }
 
@@ -155,6 +160,10 @@ exports.getVideoDetail = async (req, res, next) => {
         }
     })
 
+    if (!videoDetail) {
+        return res.status(400).json({ message: "Video doesn't exist" })
+    }
+
     //subscriber count
     let totalsubscribers = await subscription.findAndCountAll({
         where: {
@@ -167,16 +176,13 @@ exports.getVideoDetail = async (req, res, next) => {
         where: {
             VideoId: req.params.videoId
         },
-        attributes : ['UserId','action']
+        attributes: ['UserId', 'action']
     })
 
-    if (videoDetail) {
-        //incrementing view by 1 on video
-        await videoDetail.increment('views', { by: 1 });
-        return res.status(200).json({ videoDetail: videoDetail, sub: totalsubscribers.count, action : likesdislikes})
-    } else {
-        return res.status(400).json({ message: "Video doesn't exist" })
-    }
+    //incrementing view by 1 on video
+    await videoDetail.increment('views', { by: 1 });
+    return res.status(200).json({ videoDetail: videoDetail, sub: totalsubscribers.count, action: likesdislikes })
+
 }
 
 
@@ -209,30 +215,30 @@ exports.searchVideo = async (req, res, next) => {
 }
 
 exports.likedislikeVideo = async (req, res, next) => {
-    if(req.body.action != 'like' && req.body.action != 'dislike'){
-        return res.status(400).json({message : 'Wrong payload'})
+    if (req.body.action != 'like' && req.body.action != 'dislike') {
+        return res.status(400).json({ message: 'Wrong payload' })
     }
     // find if like/dislike already exist
     let oldAction = await likedislike.findOne({
-        where : {
-            UserId : req.user.id,
-            VideoId : req.body.VideoId
+        where: {
+            UserId: req.user.id,
+            VideoId: req.body.VideoId
         }
     })
-    
+
     let generatedAction
 
-    if(oldAction){
-        if(oldAction.action == req.body.action){
+    if (oldAction) {
+        if (oldAction.action == req.body.action) {
             await oldAction.destroy()
-        }else{
+        } else {
             await oldAction.destroy()
-            generatedAction = await likedislike.create({action : req.body.action, UserId : req.user.id, VideoId : req.body.VideoId})
+            generatedAction = await likedislike.create({ action: req.body.action, UserId: req.user.id, VideoId: req.body.VideoId })
         }
-    }else{
-        generatedAction = await likedislike.create({action : req.body.action, UserId : req.user.id, VideoId : req.body.VideoId})
+    } else {
+        generatedAction = await likedislike.create({ action: req.body.action, UserId: req.user.id, VideoId: req.body.VideoId })
     }
 
-    return res.status(200).json({message : 'Completed'})
-    
+    return res.status(200).json({ message: 'Completed' })
+
 }
