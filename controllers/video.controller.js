@@ -11,7 +11,7 @@ const sequelize = require('../models/sequelize')
 const likedislike = require('../models/likedislike.model')
 
 
-exports.getVideos = async (req, res, next) => {
+exports.getVideos = async (req, res, next) => { 
     const offsetBy = 0 + (8 * req.params.number)
     const limitBy = 8
     try {
