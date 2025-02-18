@@ -11,7 +11,7 @@ function blocker(req, res, next){
     }
 
     //if uploaded 2 videos , error on 3rd
-    if(uploaderlist[req.clientIpAddressFound] != undefined && uploaderlist[req.clientIpAddressFound].count >= 5){
+    if(uploaderlist[req.clientIpAddressFound] != undefined && uploaderlist[req.clientIpAddressFound].count >= 4){
         return res.status(500).json({message : 'Cannot upload more videos'})
     }
 
