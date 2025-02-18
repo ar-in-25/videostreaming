@@ -21,7 +21,8 @@ const app = express()
 //block non indian ip
 app.use(ipgeoblock({
 	geolite2: "./public/GeoLite2-Country.mmdb",
-	allowedCountries: [ "IN", "NP", "LK", "BT"]
+	// allowedCountries: [ "IN", "NP", "LK", "BT"],
+    blockedCountries:["PK", "BD"]
 }));
 
 // app.use(cors())
