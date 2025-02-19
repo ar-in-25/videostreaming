@@ -12,8 +12,8 @@ const likedislike = require('../models/likedislike.model')
 
 
 exports.getVideos = async (req, res, next) => {
-    const offsetBy = 0 + (8 * req.params.number)
-    const limitBy = 8
+    const offsetBy = 0 + (12 * req.params.number)
+    const limitBy = 12
     try {
         let allVideos = await videos.findAndCountAll({
             attributes: ['id', 'title', 'description', 'views', 'createdAt', 'UserId'],
@@ -154,7 +154,7 @@ exports.getVideoDetail = async (req, res, next) => {
         where: {
             id: req.params.videoId
         },
-        attributes: ['id', 'title', 'description', 'views', 'createdAt', 'UserId'],
+        attributes: ['id', 'title', 'description', 'views', 'createdAt', 'UserId', 'videoname'],
         include: {
             model: user,
             attributes: ['username'],
@@ -247,4 +247,15 @@ exports.likedislikeVideo = async (req, res, next) => {
 
     return res.status(200).json({ message: 'Completed' })
 
+}
+
+exports.downloadVideo = async (req, res, next) => {
+    const id = req.params.id
+    let video = await videos.findOne({
+        where : {
+            id : id
+        }
+    })
+
+    return res.sendFile((path.join(__dirname, "../public/videos/")) + video.videoname)
 }
